@@ -21,25 +21,19 @@ private:
     forward_list<string> comments;
 
 public:
-    // Constructor
     Movie(const string& title);
 
-    // Methods to add ratings and comments
     void addRating(double rating);
     void addComment(const string& comment);
-
-    // Method to display the reviews and calculate average rating
     void displayReviews() const;
 };
 
 
 int main() {
-    // Seed random number generator
     random_device rd;
     mt19937 gen(rd());
     uniform_real_distribution<> dis(1.0, 5.0);
 
-    // Read comments from file
     vector<string> comments;
     readCommentsFromFile("comments.txt", comments);
 
@@ -48,9 +42,32 @@ int main() {
         return 1;
     }
 
-    // Create Movie objects
     Movie movie1("The Great Adventure");
     Movie movie2("Mystery of the Night");
+
+    // Assign comments and ratings to movies
+    // For movie1
+    for (int i = 0; i < 2; ++i) {
+        double rating = generateRandomRating();
+        movie1.addRating(rating);
+        movie1.addComment(comments[i]);
+    }
+
+    for (int i = 2; i < 4; ++i) {
+        double rating = generateRandomRating();
+        movie2.addRating(rating);
+        movie2.addComment(comments[i]);
+    }
+
+    vector<Movie> movies;
+    movies.push_back(movie1);
+    movies.push_back(movie2);
+
+
+    for (const auto& movie : movies) {
+        movie.displayReviews();
+        cout << endl;
+    }
 
     return 0;
 }
@@ -82,7 +99,6 @@ void readCommentsFromFile(const string& filename, vector<string>& comments) {
 }
 
 Movie::Movie(const string& title) : title(title) {
-    // No need to initialize forward_list; default constructor does that
 }
 
 void Movie::addRating(double rating) {
