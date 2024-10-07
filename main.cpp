@@ -65,3 +65,59 @@ double generateRandomRating() {
     return rating;
 }
 
+void readCommentsFromFile(const string& filename, vector<string>& comments) {
+    ifstream infile(filename);
+    if (!infile) {
+        cerr << "Error opening comments file: " << filename << endl;
+        exit(1);
+    }
+
+    string line;
+    while (getline(infile, line)) {
+        if (!line.empty()) {
+            comments.push_back(line);
+        }
+    }
+    infile.close();
+}
+
+Movie::Movie(const string& title) : title(title) {
+    // No need to initialize forward_list; default constructor does that
+}
+
+void Movie::addRating(double rating) {
+    ratings.push_front(rating); // Add to the head of the list
+}
+
+void Movie::addComment(const string& comment) {
+    comments.push_front(comment); // Add to the head of the list
+}
+
+void Movie::displayReviews() const {
+    cout << "Reviews for \"" << title << "\":" << endl;
+
+    vector<double> ratingsVec(ratings.begin(), ratings.end());
+    vector<string> commentsVec(comments.begin(), comments.end());
+
+    if (ratingsVec.size() != commentsVec.size()) {
+        cerr << "Mismatch in number of ratings and comments." << endl;
+        return;
+    }
+
+    double sum = 0.0;
+    int count = ratingsVec.size();
+
+    cout << fixed << setprecision(1);
+    for (int i = count - 1; i >= 0; --i) {
+        cout << "    > Review #" << (count - i) << ": " << ratingsVec[i] << ": " << commentsVec[i] << endl;
+        sum += ratingsVec[i];
+    }
+
+    if (count > 0) {
+        double average = sum / count;
+        cout << fixed << setprecision(5);
+        cout << "    > Average: " << average << endl;
+    } else {
+        cout << "No reviews to display." << endl;
+    }
+}
